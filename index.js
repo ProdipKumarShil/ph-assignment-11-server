@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000
 require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 console.log(process.env.USER)
 console.log(process.env.PASS)
@@ -16,7 +17,6 @@ app.get('/', (req, res) => {
 })
 
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.ta7i6kc.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -37,10 +37,18 @@ async function run() {
     // my code goes from here
 
     const toysCollection = client.db('candyLand').collection('allToys')
-
+    // get all the toys
     app.get('/allToys', async(req, res) => {
       const cursor = toysCollection.find()
       const result = await cursor.toArray()
+      res.send(result)
+    })
+
+    // get single toy
+    app.get('/allToys/singleToy/:id', async(req, res) => {
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await toysCollection.findOne(query)
       res.send(result)
     })
     
