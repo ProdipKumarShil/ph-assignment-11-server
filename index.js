@@ -33,34 +33,48 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-
     // my code goes from here
 
-    const toysCollection = client.db('candyLand').collection('allToys')
+    const toysCollection = client.db("candyLand").collection("allToys");
     // get all the toys
-    app.get('/allToys', async(req, res) => {
-      const cursor = toysCollection.find()
-      const result = await cursor.toArray()
-      res.send(result)
-    })
+    app.get("/allToys", async (req, res) => {
+      const cursor = toysCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // get single toy
-    app.get('/allToys/singleToy/:id', async(req, res) => {
-      const id = req.params.id
-      const query = {_id: new ObjectId(id)}
-      const result = await toysCollection.findOne(query)
-      res.send(result)
-    })
+    app.get("/allToys/singleToy/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.findOne(query);
+      res.send(result);
+    });
 
     // get data by categories
-    app.get('/allToys/categories/:id', async(req, res) => {
-      const id = req.params.id
-      const query = { category : id};
-      const cursor = toysCollection.find(query)
-      const result = await cursor.toArray()
-      res.send(result)
-    })
-    
+    app.get("/allToys/categories/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { category: id };
+      const cursor = toysCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // get data by ascending sorting
+    app.get("/allToys/ascendingSort", async (req, res) => {
+      const query = {};
+      const cursor = toysCollection.find(query).sort({ price: 1 });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    // get data by descending sorting
+    app.get("/allToys/descendingSort", async (req, res) => {
+      const query = {};
+      const cursor = toysCollection.find(query).sort({ price: -1 });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // my code goes from here
 
     // Send a ping to confirm a successful connection
