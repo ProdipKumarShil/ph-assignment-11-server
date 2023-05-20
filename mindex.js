@@ -1,20 +1,17 @@
-const express = require('express');
-const cors = require('cors');
-const app = express()
-const port = process.env.PORT || 5000
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const port = process.env.PORT || 5000;
 require("dotenv").config();
-
-console.log(process.env.USER)
-console.log(process.env.PASS)
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // middleware
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('candy land toys are flying')
-})
-
+app.get("/", (req, res) => {
+  res.send("candy land toys are flying");
+});
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.ta7i6kc.mongodb.net/?retryWrites=true&w=majority`;
@@ -33,18 +30,22 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const toysCollection = client.db("candyLand").collection("allToys");
 
-    // my code goes from here
+    // all toys
+    app.get("/allToys", async (req, res) => {
+      const cursor = toysCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
-    const toysCollection = client.db('candyLand').collection('allToys')
-
-    app.get('/allToys', async(req, res) => {
-      const cursor = toysCollection.find()
-      const result = await cursor.toArray()
-      res.send(result)
-    })
-    
-    // my code goes from here
+    // get toys by category
+    app.get("/allToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { category: new ObjectId(id) };
+      const result = await toysCollection.find(query).toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -58,7 +59,6 @@ async function run() {
 }
 run().catch(console.dir);
 
-
 app.listen(port, () => {
-  console.log('candy land toys are running on', port)
-})
+  console.log("candy land toys are running on", port);
+});
