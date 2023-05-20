@@ -31,7 +31,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
 
     // my code goes from here
@@ -49,6 +49,15 @@ async function run() {
       const id = req.params.id
       const query = {_id: new ObjectId(id)}
       const result = await toysCollection.findOne(query)
+      res.send(result)
+    })
+
+    // get data by categories
+    app.get('/allToys/categories/:id', async(req, res) => {
+      const id = req.params.id
+      const query = { category : id};
+      const cursor = toysCollection.find(query)
+      const result = await cursor.toArray()
       res.send(result)
     })
     
