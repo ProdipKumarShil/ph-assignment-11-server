@@ -88,6 +88,18 @@ async function run() {
       res.send(result)
     })
 
+    // get toy data by seller
+    app.get('/getSellerToysByEmail', async( req, res) => {
+      console.log(req.query.email)
+      let query = {}
+      if(req.query?.email){
+        query = {email: req.query.email}
+      }
+      const cursor = sellerToys.find(query)
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+
     // my code goes from here
 
     // Send a ping to confirm a successful connection
