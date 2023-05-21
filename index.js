@@ -82,6 +82,12 @@ async function run() {
       res.send(result)
     });
 
+    app.get("/getSellerToys", async (req, res) => {
+      const cursor = sellerToys.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+
     // my code goes from here
 
     // Send a ping to confirm a successful connection
