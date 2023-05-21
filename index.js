@@ -5,8 +5,6 @@ const port = process.env.PORT || 5000
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-console.log(process.env.USER)
-console.log(process.env.PASS)
 
 // middleware
 app.use(cors())
@@ -36,6 +34,8 @@ async function run() {
     // my code goes from here
 
     const toysCollection = client.db("candyLand").collection("allToys");
+    const sellerToys = client.db("candyLand").collection("sellerToys");
+    
     // get all the toys
     app.get("/allToys", async (req, res) => {
       const cursor = toysCollection.find();
@@ -73,6 +73,13 @@ async function run() {
       const cursor = toysCollection.find(query).sort({ price: -1 });
       const result = await cursor.toArray();
       res.send(result);
+    });
+
+    // seller toys
+    app.post("/sellerToys", async (req, res) => {
+      const body = req.body;
+      const result = await sellerToys.insertOne(body)
+      res.send(result)
     });
 
     // my code goes from here
