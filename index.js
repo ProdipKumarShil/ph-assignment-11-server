@@ -100,6 +100,14 @@ async function run() {
       res.send(result)
     })
 
+    // delete data 
+    app.delete("/getSellerToys/:id", async (req, res) => {
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await sellerToys.deleteOne(query)
+      res.send(result)
+    });
+
     // my code goes from here
 
     // Send a ping to confirm a successful connection
