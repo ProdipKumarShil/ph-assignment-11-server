@@ -88,6 +88,25 @@ async function run() {
       res.send(result)
     })
 
+    // edit the seller toys
+    app.put("/getSellerToys/:id", async(req, res) => {
+      const id = req.params.id
+      const toy = req.body;
+      console.log(id, toy)
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert: true}
+      const updatedToy = {
+        $set: {
+          price: toy.price,
+          quantity: toy.quantity,
+          description: toy.description
+        }
+      }
+
+      const result = await sellerToys.updateOne(filter, updatedToy, options)
+      res.send(result)
+    });
+
     // get toy data by seller
     app.get('/getSellerToysByEmail', async( req, res) => {
       console.log(req.query.email)
