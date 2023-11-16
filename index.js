@@ -35,6 +35,7 @@ async function run() {
 
     const toysCollection = client.db("candyLand").collection("allToys");
     const sellerToys = client.db("candyLand").collection("sellerToys");
+    const userCollection = client.db("candyLand").collection("users");
     
     // get all the toys
     app.get("/allToys", async (req, res) => {
@@ -126,6 +127,23 @@ async function run() {
       const result = await sellerToys.deleteOne(query)
       res.send(result)
     });
+
+    // add cart to items
+    app.post('/addCart', async(req, res) => {
+      const id = req.body
+      console.log(id)
+    })
+
+    // add user in db
+    app.post('/addUser', async(req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user)
+      if(result.insertedId){
+        res.status(200).send({success: true})
+      } else {
+        res.status(500).send({success: false})
+      }
+    })
 
     // my code goes from here
 
