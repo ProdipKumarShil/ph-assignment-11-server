@@ -36,6 +36,7 @@ async function run() {
     const toysCollection = client.db("candyLand").collection("allToys");
     const sellerToys = client.db("candyLand").collection("sellerToys");
     const userCollection = client.db("candyLand").collection("users");
+    const cartsCollection = client.db("candyLand").collection("carts");
     
     // get all the toys
     app.get("/allToys", async (req, res) => {
@@ -130,8 +131,20 @@ async function run() {
 
     // add cart to items
     app.post('/addCart', async(req, res) => {
-      const id = req.body
-      console.log(id)
+      const cart = req.body
+      const result = await cartsCollection.insertOne(cart)
+      if(result.insertedId){
+        res.status(200).send({success: true})
+      } else {
+        res.status(500).send({success: false})
+      }
+    })
+
+    // get the carts
+    app.get('/carts/:id', async(req, res) => {
+      const uid = req.params.id
+      const cartItems = await cartsCollection.find({userID: uid}).toArray()
+      res.send(cartItems)
     })
 
     // add user in db
