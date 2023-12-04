@@ -139,12 +139,24 @@ async function run() {
         res.status(500).send({success: false})
       }
     })
+    
+    // get cart item by email
+    app.get('/carts', async(req, res) => {
+      const email = req.query.email
+      if(!email){
+        res.send([])
+      } else {
+        const query = {userEmail: email}
+        const result = await cartsCollection.find(query).toArray()
+        res.send(result)
+      }
+    })
 
-    // get the carts
-    app.get('/carts/:id', async(req, res) => {
-      const uid = req.params.id
-      const cartItems = await cartsCollection.find({userID: uid}).toArray()
-      res.send(cartItems)
+    // delete cart item
+    app.delete('/deleteCart', async(req, res) => {
+      const {userEmail, toyId} = req.query;
+      const result = await cartsCollection.deleteOne({toyId: toyId, userEmail: userEmail})
+      res.send(result)
     })
 
     // add user in db
